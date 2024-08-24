@@ -1,2 +1,2 @@
-# Courses-EPCC-OpenMP-Mandelbrot_set-C
-A simple OpenMP c code to obtain the Mandelbrot set
+# Courses-EPCC-OpenMP-Mandelbrot_set
+A OpenMP c/c++ codes to obtain and visualize the Mandelbrot set
