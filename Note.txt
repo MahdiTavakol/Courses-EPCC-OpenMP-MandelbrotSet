@@ -1,0 +1,4 @@
+I have an interesting observation. 
+If we do column major memory allocation and then parallelize the row index with OpenMP the simulation speed can be 60% higher than the case the column index is parallelized.
+This is in contrast with the MPI parallelization in which the column index should be use to parition the data. The difference could be due to the difference in the memory model of OPENMP (shared) and MPI (distributed). 
+Thus, MPI and OpenMP can be used in two perpendicular orientations to increase the computational efficiency.
