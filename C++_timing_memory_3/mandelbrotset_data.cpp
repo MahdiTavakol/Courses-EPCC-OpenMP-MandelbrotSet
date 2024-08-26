@@ -32,9 +32,9 @@ int main(int argc, char** argv)
 
 
 	int omp_num_threads;
-	int* thread_ids;
 
 	int* first_range, * last_range;
+	int size_per_thread;
 
 
 
@@ -113,21 +113,19 @@ int main(int argc, char** argv)
 #pragma omp single
 		{
 			first_range = (int*)malloc(omp_num_threads * sizeof(int));
-			last_range = (int*)malloc(omp_num_thrads * sizeof(int));
-			thread_ids = (int*)malloc(omp_num_threads * sizeof(int));
+			last_range = (int*)malloc(omp_num_threads * sizeof(int));
 		}
-		int size_per_thread = x_size / omp_num_threads;
+		size_per_thread = 1 + x_size / omp_num_threads;
 		int first = thread_id * x_size + thread_id * size_per_thread;
 		int last = first + size_per_thread;
-		if (last >= x_size * omp_num_threads) last = x_size * omp_num_threads - 1;
-		first_range[i] = first;
-		last_range[i] = last;
-		thread_ids[i] = thread_id;
+		if (last >= x_size * omp_num_threads) last = x_size * omp_num_threads;
+		first_range[thread_id] = first;
+		last_range[thread_id] = last;
 	}
 
 
 	std::cout << "Allocating memory for the omp part" << std::endl;
-	allocate(X, x_size, omp_num_threads * y_size);
+	allocate(X, omp_num_threads * x_size, y_size);
 
 	start = std::chrono::high_resolution_clock::now();
 	std::cout << "Starting the parallel code" << std::endl;
@@ -142,9 +140,9 @@ int main(int argc, char** argv)
 
 	area = 0.0;
 
-#pragma omp parallel default(none) shared(x_size,x_min,x_max,y_min,y_max,y_size,num_iterations,file_omp,X) private(z,c) reduction(+:area)
+#pragma omp parallel default(none) shared(x_size,x_min,x_max,y_min,y_max,y_size,num_iterations,file_omp,X,first_range,last_range,size_per_thread) private(z,c) reduction(+:area)
 	{
-		int thread_id = thread_ids[i];
+		int thread_id = omp_get_thread_num();
 		int first = first_range[thread_id];
 		int last = last_range[thread_id];
 		for (int i = first; i < last; i++)
@@ -153,8 +151,10 @@ int main(int argc, char** argv)
 			{
 				z.real = 0.0;
 				z.imag = 0.0;
-				c.real = x_min + (double)i * (x_max - x_min) / (x_size - 1);
-				c.imag = y_min + (double)j * (y_max - y_min) / (y_size - 1);
+				int _i = i%x_size;
+				int _j = j;
+				c.real = x_min + (double)_i * (x_max - x_min) / (x_size - 1);
+				c.imag = y_min + (double)_j * (y_max - y_min) / (y_size - 1);
 				int k = 0;
 				for (k = 0; k < num_iterations; k++)
 				{
@@ -183,16 +183,16 @@ int main(int argc, char** argv)
 
 #pragma omp parallel
 	{
-		int thread_id = thread_ids[i];
-		int data_per_thread = x_size / num_threads;
+		int thread_id = omp_get_thread_num();
+		int data_per_thread = x_size / omp_num_threads;
 
 		int _first = thread_id * data_per_thread;
 		int _last = _first + data_per_thread;
-		if (_last > x_size) _last = x_size - 1;
+		if (_last > x_size) _last = x_size;
 
 		for (int i = _first; i < _last; i++)
-			for (int j = 0; j < size_y; j++)
-				X[i][j] = X[i+thread_id*size_x][j];
+			for (int j = 0; j < y_size; j++)
+				X[i][j] = X[i+thread_id*x_size][j];
 	}
 
 
@@ -210,7 +210,7 @@ int main(int argc, char** argv)
 
 	deallocate(X);
 
-	delete [] thread_ids;
+
 	delete [] first_range;
 	delete [] last_range;
 
