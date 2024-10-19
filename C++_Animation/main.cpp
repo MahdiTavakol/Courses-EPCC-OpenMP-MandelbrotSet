@@ -16,7 +16,7 @@
 #include "mandelbrot_xmesh_innerloop.h"
 #include "mandelbrot_ymesh_innerloop.h"
 
-enum {TIMING,ANIMATE};
+enum {TIMING,ANIMATE_1,ANIMATE_2};
 
 
 template<class SIMTYPE>
@@ -25,34 +25,45 @@ double run_mandelbrot(std::string _info, int _allocation_mode, const bounds& _bn
 void writeMaps(std::string _info_file, std::map<std::string, double>& timings, std::map<std::string, double>& areas);
 void animate(std::string _file_name, const complex& _center, const double& _scale);
 void generate_timing_info();
-void generate_animation(int frame_init=0, int num_frames=100);
+void generate_animation(const complex& _center, int frame_init=0, int num_frames=100);
 
 int main(int argc, char** argv)
 {
-	int mode = ANIMATE;
+	int mode = ANIMATE_2;
 
 	switch (mode)
 	{
 	case TIMING:
 		generate_timing_info();
 		break;
-	case ANIMATE:
+	case ANIMATE_1:
+		complex center(-0.743643887037151,0.131825904205330);
 	        if (argc == 3)
 	        {
 	        	int frame_init = std::stoi(argv[1]);
 	        	int num_frames = std::stoi(argv[2]);
-	        	generate_animation(frame_init,num_frames);
+	        	generate_animation(center,frame_init,num_frames);
 	        }
-	        else generate_animation();
+	        else generate_animation(center);
+		break;
+	case ANIMATE_2:
+		complex center(−0.1015,0.633);
+	        if (argc == 3)
+	        {
+	        	int frame_init = std::stoi(argv[1]);
+	        	int num_frames = std::stoi(argv[2]);
+	        	generate_animation(center,frame_init,num_frames);
+	        }
+	        else generate_animation(center);
 		break;
 	}
 	return 0;
 }
 
-void generate_animation(int frame_init, int num_frames)
+void generate_animation(const complex& _center, int frame_init, int num_frames)
 {
-	complex center(- 0.743643887037151,0.131825904205330);
-	//complex center("- 0.743643887037151+i0.131825904205330");
+	//complex center(-0.743643887037151,0.131825904205330);
+	//complex center("-0.743643887037151+i0.131825904205330");
 
 	double S0 = 1.0;
 	double decay_rate = 0.95;
@@ -64,7 +75,7 @@ void generate_animation(int frame_init, int num_frames)
 		if (i < frame_init) continue;
 		double zoom = 1.0/S;
 		std::string file_name("frame-" + std::to_string(i));
-		animate(file_name, center, zoom);
+		animate(file_name, _center, zoom);
 	}
 
 }
