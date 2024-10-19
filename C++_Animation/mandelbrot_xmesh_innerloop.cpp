@@ -71,5 +71,5 @@ void mandelbrot_xmesh_innerloop::calculate(const double& _scale)
 
 void mandelbrot_xmesh_innerloop::calculate()
 {
-	calculate(1.0);
+	calculate(2.0);
 }

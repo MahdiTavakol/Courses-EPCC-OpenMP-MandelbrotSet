@@ -48,8 +48,8 @@ void generate_animation()
 	int num_frames = 10;
 	double first_zoom = 1.0;
 	double last_zoom = 1.5;
-	//complex center(-0.743643887037151, 0.131825904205330);
-	complex center(-0.895, 0.0);
+	complex center(- 0.743643887037151,0.131825904205330);
+	//complex center("- 0.743643887037151+i0.131825904205330");
 
 
 	for (int i = 0; i < num_frames; i++) {

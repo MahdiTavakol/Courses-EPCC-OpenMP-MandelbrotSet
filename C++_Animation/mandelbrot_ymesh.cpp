@@ -87,6 +87,6 @@ void mandelbrot_ymesh::calculate(const double& _scale)
 
 void mandelbrot_ymesh::calculate()
 {
-	calculate(1.0);
+	calculate(2.0);
 }
 
