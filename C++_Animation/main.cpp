@@ -25,7 +25,7 @@ double run_mandelbrot(std::string _info, int _allocation_mode, const bounds& _bn
 void writeMaps(std::string _info_file, std::map<std::string, double>& timings, std::map<std::string, double>& areas);
 void animate(std::string _file_name, const complex& _center, const double& _scale);
 void generate_timing_info();
-void generate_animation();
+void generate_animation(int frame_init=0, int num_frames=100);
 
 int main(int argc, char** argv)
 {
@@ -37,17 +37,20 @@ int main(int argc, char** argv)
 		generate_timing_info();
 		break;
 	case ANIMATE:
-		generate_animation();
+	        if (argc == 3)
+	        {
+	        	int frame_init = std::stoi(argv[1]);
+	        	int num_frames = std::stoi(argv[2]);
+	        	generate_animation(frame_init,num_frames);
+	        }
+	        else generate_animation();
 		break;
 	}
 	return 0;
 }
 
-void generate_animation()
+void generate_animation(int frame_init, int num_frames)
 {
-	int num_frames = 100;
-	double first_zoom = 1.0;
-	double last_zoom = 1.5;
 	complex center(- 0.743643887037151,0.131825904205330);
 	//complex center("- 0.743643887037151+i0.131825904205330");
 
@@ -58,6 +61,7 @@ void generate_animation()
 
 	for (int i = 0; i < num_frames; i++) {
 		S *= decay_rate;
+		if (i < frame_init) continue;
 		double zoom = 1.0/S;
 		std::string file_name("frame-" + std::to_string(i));
 		animate(file_name, center, zoom);
