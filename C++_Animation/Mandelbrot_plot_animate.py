@@ -42,32 +42,38 @@ def read_data(datafile,x_dim,y_dim,min_c,max_c):
 ##########################################################################
 
 datafile = sys.argv[1]
-x_dim, y_dim = int(sys.argv[2]), int(sys.argv[3])
+frame_init, frame_stride, frame_last = int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4])
+x_dim, y_dim = int(sys.argv[5]), int(sys.argv[6])
 c_min, c_max = 0 , 1
 outputwidth , outputheight = 16, 9
-outputfile = datafile.replace(".dat","")
 
 ##########################################################################
-print("Processing the data file")
-data = read_data(datafile,x_dim,y_dim,c_min,c_max)
-print("Finished processing the data file")
+for frame_i in range(frame_init,frame_last+1,frame_stride):
+	datafile_i = datafile + "-" + str(frame_i) + ".dat"
+	outputfile_i = datafile_i.replace(".dat","")
+
 ##########################################################################
-print("Plotting the data")
-fig, ax = plt.subplots()
-ax.imshow(data)
-plt.xticks([])
-plt.yticks([])
+	print(f"Processing the data file {datafile_i}")
+	data = read_data(datafile_i,x_dim,y_dim,c_min,c_max)
+	print("\tFinished processing the data file")
 ##########################################################################
-plt.subplots_adjust(left=0.,
+	print("\tPlotting the data")
+	fig, ax = plt.subplots()
+	ax.imshow(data)
+	plt.xticks([])
+	plt.yticks([])
+##########################################################################
+	plt.subplots_adjust(left=0.,
                     bottom=0., 
                     right=1., 
                     top=1., 
                     wspace=0, 
                     hspace=0)
 ##########################################################################
-print("Saving the plot")
-fig.set_size_inches(outputwidth,outputheight)
-fig.savefig(outputfile+".svg",dpi=1200)
-
+	print("\tSaving the plot")
+	fig.set_size_inches(outputwidth,outputheight)
+	fig.savefig(outputfile_i+".svg",dpi=1200)
+##########################################################################
+	plt.close()
 ##########################################################################
 print("All done!")
