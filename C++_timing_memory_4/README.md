@@ -24,4 +24,4 @@ According to the allocation method an operator() is used to do the indexing.
 
 4) mandelbrot_ymesh_innerloop ==> The data in the y direction is distributed among the threads in the inner loop
 
-* *And finally the file timings.xlsx compares the performance of these versions for.* *
+* *And finally the file timings.xlsx compares the performance of these versions for  Intel(R) Core(R) i5-1135G7 (8threads) and a DUAL CPU Intel(R) Xeon(R) w7-2495X (2X24Threads) *
