@@ -45,15 +45,20 @@ int main(int argc, char** argv)
 
 void generate_animation()
 {
-	int num_frames = 10;
+	int num_frames = 100;
 	double first_zoom = 1.0;
 	double last_zoom = 1.5;
 	complex center(- 0.743643887037151,0.131825904205330);
 	//complex center("- 0.743643887037151+i0.131825904205330");
 
+	double S0 = 1.0;
+	double decay_rate = 0.95;
+	double S = S0;
+
 
 	for (int i = 0; i < num_frames; i++) {
-		double zoom = first_zoom + i * (last_zoom - first_zoom) / (static_cast<int>(num_frames));
+		S *= decay_rate;
+		double zoom = 1.0/S;
 		std::string file_name("frame-" + std::to_string(i));
 		animate(file_name, center, zoom);
 	}
@@ -274,5 +279,4 @@ void writeMaps(std::string _info_file_name, std::map<std::string, double>& _timi
 	info_file.close();
 	std::cout << "Finished writing the timging info file " << std::endl;
 }
-
 
